@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  # Procesar y gestionar los datos
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: unless-stopped
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./data/nodered:/data
+    networks:
+      - iot_network
+
+  # Almacenar el histórico de datos
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=iot
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=sanluis
+      - INFLUXDB_USER=iotuser
+      - INFLUXDB_USER_PASSWORD=iot123
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+    networks:
+      - iot_network
+
+  # Visualización y alertar
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    networks:
+      - iot_network
+    depends_on:
+      - influxdb
+
+networks:
+  iot_network:
