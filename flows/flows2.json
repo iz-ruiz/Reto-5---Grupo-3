@@ -1,0 +1,13 @@
+// 1. Extraer valores del payload que viene de Wokwi
+const temp = msg.payload.temperatura;
+const hum = msg.payload.humedad;
+
+// 2. Construir el payload para ThingSpeak 
+msg.payload = `field1=${temp}&field2=${hum}`;
+
+// 3. Configurar el topic de publicación de tu canal
+msg.topic = "channels/3254060/publish";
+
+return msg;
+
+
