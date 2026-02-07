@@ -1,0 +1,32 @@
+// 1. Convertir el payload de String/Buffer a Objeto JSON
+let datos;
+try {
+    datos = typeof msg.payload === 'object' ? msg.payload : JSON.parse(msg.payload);
+} catch (e) {
+    node.error("Error al parsear JSON: " + e.message);
+    return null;
+}
+
+// 2. Extraer valores usando los nombres correctos
+let temp = datos.temperatura;
+let hum = datos.humedad;
+
+// 3. Definir campos para InfluxDB (asegurando números)
+let fields = {
+    humidity: parseFloat(hum),
+    temperature: parseFloat(temp)
+};
+
+// 4. Etiquetas
+let tags = {
+    sensor_id: "ESP32_Grupo3",
+    ubicacion: "Wokwi"
+};
+
+msg.measurement = "clima_sensores";
+msg.payload = [fields, tags];
+
+// Estado visual
+node.status({ fill: "green", shape: "dot", text: `T: ${temp}°C H: ${hum}%` });
+
+return msg;
