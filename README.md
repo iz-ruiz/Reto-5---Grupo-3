@@ -1,4 +1,4 @@
-# Reto-5---Grupo-3
+# Reto-5-Grupo-3
 # Proyecto IoT: Monitorización Ambiental - Reto 5 (Fórmula 1)
 
 ## 📋 Descripción General
